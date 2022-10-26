@@ -49,6 +49,24 @@ From https://github.com/chsasank/Spoon-Knife
 
 
 $ git subtree merge --prefix knife knife/super
+Auto-merging knife/index.html
+CONFLICT (content): Merge conflict in knife/index.html
+Automatic merge failed; fix conflicts and then commit the result.
+
+# manually fix conflicts
+$ git add knife/index.html
+
+# merge commit
+$ git commit
+[master b437da0] Merge commit 'd5115e11c928081e2288e926c495b74892160202'
+```
+
+
+## PR flow
+
+
+```
+$ git checkout -b pull/batman
 ```
 
 
