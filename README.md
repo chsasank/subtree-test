@@ -51,3 +51,47 @@ From https://github.com/chsasank/Spoon-Knife
 $ git subtree merge --prefix knife knife/super
 ```
 
+
+## Bibucket LFS import
+
+```
+$ git checkout -b bb/lfs
+$ git remote add bb_lfs git@bitbucket.org:chsasank/knife_bb.git
+$ git status
+On branch bb/lfs
+nothing to commit, working tree clean
+
+$ git fetch --all
+$ git subtree add --prefix bb_lfs_subtree bb_lfs master
+git fetch bb_lfs master
+From bitbucket.org:chsasank/knife_bb
+ * branch            master     -> FETCH_HEAD
+Downloading bb_lfs_subtree/Transaction Cost Economics and .pdf (784 KB)
+Error downloading object: bb_lfs_subtree/Transaction Cost Economics and .pdf (109b189): Smudge error: Error downloading bb_lfs_subtree/Transaction Cost Economics and .pdf (109b189cfb462e69bf55c91acb32f1d73dff1c42c6df29e9686abf99fb7101d6): [109b189cfb462e69bf55c91acb32f1d73dff1c42c6df29e9686abf99fb7101d6] Object does not exist on the server: [404] Object does not exist on the server
+
+Errors logged to /Users/sasank/projects/qure/random/git-submodule-try/test/.git/lfs/logs/20221026T144926.177464.log
+Use `git lfs logs last` to view the log.
+error: external filter 'git-lfs filter-process' failed
+fatal: bb_lfs_subtree/Transaction Cost Economics and .pdf: smudge filter lfs failed
+
+```
+
+Work around: https://arwedus.wordpress.com/2021/09/09/avoid-missing-git-lfs-files-on-subtree-merge/
+
+```
+$ git clone git@bitbucket.org:chsasank/knife_bb.git
+$ cd knife_bb
+$ git remote add github git@github.com:chsasank/subtree-test.git
+$ git lfs push github master --all
+```
+
+And it works now!
+
+```
+$ cd subtree_test
+$ git subtree add --prefix bb_lfs_subtree bb_lfs master
+git fetch bb_lfs master
+From bitbucket.org:chsasank/knife_bb
+ * branch            master     -> FETCH_HEAD
+Added dir 'bb_lfs_subtree'
+```
