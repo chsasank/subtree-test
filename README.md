@@ -151,6 +151,8 @@ A - B - C (main) - D (branch/B1)
     \- E - F (branch/B2)
 ```
 
+### Merge B1
+
 We have squashed all the commits until C (master). Let's start with obvious merge: `branch/B1`
 
 ```bash
@@ -179,4 +181,24 @@ $ git log --graph --oneline
 $ git push origin squash_merge_B1
 ```
 
-Let's create PR and see how the diff looks like: 
+Let's create PR and see how the diff looks like: https://github.com/chsasank/subtree-test/pull/6
+
+### Merge B2
+
+```bash
+$ cd subtree-test
+$ git checkout master
+$ git pull
+$ git checkout -b squash_merge_B2
+
+# note the lack of squash in the merge.
+$ git subtree merge --prefix subtree-squash-merge subtree-squash-merge/branch/B2
+fatal: refusing to merge unrelated histories
+
+# now with squash in the merge.
+$ git subtree merge --prefix subtree-squash-merge --squash subtree-squash-merge/branch/B2
+
+$ git push origin squash_merge_B2
+```
+
+Now if we raise PR: https://github.com/chsasank/subtree-test/pull/7. Note how this means *switching* to branch/B2. To actually merge, you need to merge original commits too. See notes in the PR on how to merge.
