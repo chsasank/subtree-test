@@ -201,4 +201,4 @@ $ git subtree merge --prefix subtree-squash-merge --squash subtree-squash-merge/
 $ git push origin squash_merge_B2
 ```
 
-Now if we raise PR: https://github.com/chsasank/subtree-test/pull/7
+Now if we raise PR: https://github.com/chsasank/subtree-test/pull/7. Note how this means *switching* to branch/B2. To actually merge, you need to merge original commits too. See notes in the PR on how to merge.
