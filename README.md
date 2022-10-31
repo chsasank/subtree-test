@@ -113,3 +113,70 @@ From bitbucket.org:chsasank/knife_bb
  * branch            master     -> FETCH_HEAD
 Added dir 'bb_lfs_subtree'
 ```
+
+
+
+## Subtree: squashing commits and merging
+
+Create a repo to squash subtree merge
+```
+$ git clone git@github.com:chsasank/subtree-squash-merge.git
+$ cd subtree-squash-merge
+$ git log --graph --oneline --branches 
+* aa041b5 (origin/branch/B2, branch/B2) commit D
+* 5008afc commit E
+| * 14076b6 (origin/branch/B1, branch/B1) commit D
+| * 3515a4b (HEAD -> main, origin/main) commit C
+|/  
+* 9030f6a commit B
+* 9d157f3 commit A
+```
+
+Now let's add `main` to our repo using sqash
+
+```bash
+$ cd subtree-test
+$ git checkout -b squash_merge
+$ git remote add subtree-squash-merge git@github.com:chsasank/subtree-squash-merge.git
+$ git subtree add --prefix subtree-squash-merge --squash subtree-squash-merge main
+$ git push origin squash_merge
+```
+
+Now let's see how the PR looks like: https://github.com/chsasank/subtree-test/pull/5. Let's merge this for now.
+
+Now time to do some black magic! We want to merge `branch/B1` and `branch/B2` into our repo! Here's our graph:
+
+```
+A - B - C (main) - D (branch/B1)
+    \- E - F (branch/B2)
+```
+
+We have squashed all the commits until C (master). Let's start with obvious merge: `branch/B1`
+
+```bash
+$ cd subtree-test
+$ git checkout master
+$ git checkout -b squash_merge_B1
+
+# note the lack of squash in the merge.
+$ git subtree merge --prefix subtree-squash-merge subtree-squash-merge/branch/B1
+fatal: refusing to merge unrelated histories
+
+# now with squash in the merge.
+$ git subtree merge --prefix subtree-squash-merge --squash subtree-squash-merge/branch/B1
+$ git log --graph --oneline 
+*   57f22e7 (HEAD -> squash_merge_B1) Merge commit 'd37818beac523cc42754f3548bf19a32b7f2640' into squash_merge_B1
+|\  
+| * d037819 Squashed 'subtree-squash-merge/' changes from 3515a4b..14076b6
+* |   20a3e65 (master) Merge pull request #5 from chsasank/squash_merge
+|\ \  
+| * | 54a1af3 Merge commit '33edce7847bab2a0932df8d53e46378b248e6039' as 'subtree-squash-merge'
+|/| | 
+| |/  
+| * 33edce7 Squashed 'subtree-squash-merge/' content from commit 3515a4b
+*   7b76356 Merge pull request #3 from chsasank/squash_merge
+
+$ git push origin squash_merge_B1
+```
+
+Let's create PR and see how the diff looks like: 
